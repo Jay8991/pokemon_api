@@ -1,8 +1,10 @@
-
+# to get the average
+import statistics as s 
+import pprint as pp
 
 class Pokedex:
     def __init__(self):
-         # a way to store pokemon names
+         # a way to store pokemon names and dict for sort
         self.pokemon_names = []
         self.pokemon_sort = {}
     
@@ -13,19 +15,21 @@ class Pokedex:
     def add(self, pokemon):
         self.pokemon_names.append(pokemon)
     
+    # get abilities cause some pokemon can have more than one ability
     def get_ability(self, pokemon_data):
-        # get abilities cause some pokemon can have more than one ability
-        abilities = []
+        pokemon_abilities = []
         for j in range(len(pokemon_data.json()['abilities'])):
-            abilities.append(
+            pokemon_abilities.append(
                 {
                     'name' : pokemon_data.json()['abilities'][j]['ability']['name']
                 }
             )
-        return abilities
+        return pokemon_abilities
     
     def existing_class_type(self, pokemon_data, class_types):
-        abilities = self.get_ability(pokemon_data)
+        # the class name exists so just need to append the data to that class name 
+        # get it's abilities so can later append it 
+        pokemon_abilities = self.get_ability(pokemon_data)
         self.pokemon_sort[class_types]['characters'].append(
         {
             'name' : pokemon_data.json()['forms'][0]['name'],
@@ -38,11 +42,11 @@ class Pokedex:
                     'defense' : pokemon_data.json()['stats'][2]['base_stat'],
                     'speed' : pokemon_data.json()['stats'][5]['base_stat']
                 },
-            'abilities' : abilities
+            'abilities' : pokemon_abilities
         })
 
     def new_class_type(self, pokemon_data, class_types):
-        abilities = self.get_ability(pokemon_data)
+        pokemon_abilities = self.get_ability(pokemon_data)
         self.pokemon_sort.update(
         {
             class_types : 
@@ -58,11 +62,26 @@ class Pokedex:
                                 'defense' : pokemon_data.json()['stats'][2]['base_stat'],
                                 'speed' : pokemon_data.json()['stats'][5]['base_stat']
                             },
-                            'abilities' : abilities
+                            'abilities' : pokemon_abilities
                         }
-                    ],
+                    ]
+                    # 'statistics' : {
+                    #     "average height" : 0,
+                    #     "average weight" : 0,
+                    #     "average health" : 0,
+                    #     "average attack" : 0,
+                    #     "average defense" : 0,
+                    #     "average speed" : 0
+                    # }
                 }
+    
         })
+    
+    # def get_statistics(self):
+    #     for i in range(len(self.pokemon_sort['electric']['characters'])):
+    #         self.avg_height_electric.append(self.pokemon_sort[]['characters'][i]['height'])
+        
+    #     print(self.avg_height)
 
     def sort_list(self, pokemon_data):
 
@@ -76,5 +95,5 @@ class Pokedex:
 
     
     def print_sort(self):
-        print(self.pokemon_sort)
+        pp.pprint(self.pokemon_sort)
 
