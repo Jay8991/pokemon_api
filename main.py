@@ -11,7 +11,6 @@ class Pokedex:
          # a way to store pokemon names
         self.pokemon_names = []
         self.pokemon_sort = {}
-        self.names = []
     
     def show(self):
         for i in range(len(self.pokemon_names)):
@@ -20,14 +19,60 @@ class Pokedex:
     def add(self, pokemon):
         self.pokemon_names.append(pokemon)
 
-    def sort_list(self):
-        for i in range(len(self.pokemon_names)):
-            data = requests.get('https://pokeapi.co/api/v2/pokemon/' + self.pokemon_names[i])
-            pokedex_key = data.json()['types'][0]['type']['name']
-            if(pokedex_key in self.pokemon_sort):
-                self.pokemon_sort[pokedex_key].append(data.json()['forms'][0]['name'])
-            else:
-                self.pokemon_sort.update({pokedex_key : [data.json()['forms'][0]['name']]})
+    def sort_list(self, pokemon_data):
+        class_types = pokemon_data.json()['types'][0]['type']['name']
+        if(class_types in self.pokemon_sort):
+            self.pokemon_sort[class_types]['characters'].append(
+                {
+                    'name' : pokemon_data.json()['forms'][0]['name'],
+                    'height' : pokemon_data.json()['height'],
+                    'weight' : pokemon_data.json()['weight'],
+                    'stats' : 
+                        {
+                            'health (hp)' : pokemon_data.json()['stats'][0]['base_stat'],
+                            'attack' : pokemon_data.json()['stats'][1]['base_stat'],
+                            'defense' : pokemon_data.json()['stats'][2]['base_stat'],
+                            'speed' : pokemon_data.json()['stats'][5]['base_stat']
+                        },
+                    'abilities' : [
+                            {
+                                'name' : pokemon_data.json()['abilities'][0]['ability']['name']
+                            },
+                            {
+                                'name' : pokemon_data.json()['abilities'][1]['ability']['name']
+                            }
+                        ]
+                })
+        else:
+            self.pokemon_sort.update(
+                {
+                    class_types : 
+                        {
+                            'characters': [
+                                {
+                                    'name' : pokemon_data.json()['forms'][0]['name'],
+                                    'height' : pokemon_data.json()['height'],
+                                    'weight' : pokemon_data.json()['weight'],
+                                    'stats' : {
+                                        'health (hp)' : pokemon_data.json()['stats'][0]['base_stat'],
+                                        'attack' : pokemon_data.json()['stats'][1]['base_stat'],
+                                        'defense' : pokemon_data.json()['stats'][2]['base_stat'],
+                                        'speed' : pokemon_data.json()['stats'][5]['base_stat']
+                                    },
+                                    'abilities' : [
+                                        {
+                                            'name' : pokemon_data.json()['abilities'][0]['ability']['name']
+                                        },
+                                        {
+                                            'name' : pokemon_data.json()['abilities'][1]['ability']['name']
+                                        }
+                                    ]
+                                }
+                            ],
+                        }
+                })
+    
+    def print_sort(self):
         print(self.pokemon_sort)
 
 
@@ -45,12 +90,13 @@ def main():
         elif populate_pokemon == 'quit':
             break
         elif populate_pokemon == 'sort':
-            pokedex.sort_list()
+            pokedex.print_sort()
         else:
-            data = requests.get('https://pokeapi.co/api/v2/pokemon/' + populate_pokemon)
+            data = requests.get('https://pokeapi.co/api/v2/pokemon/'+ populate_pokemon)
             if data.status_code == 200:
                 # print("In the list")
                 pokedex.add(populate_pokemon)
+                pokedex.sort_list(data)
             else:
                 print("Not valid command or pokemon not valid!!")
     
