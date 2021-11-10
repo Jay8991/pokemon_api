@@ -1,8 +1,6 @@
 import requests
 import pokedex as p
 
-
-
 def directions():
     print("""Type 'show' to view Pokedex.
 Type 'quit' to exit Pokedex.
