@@ -33,7 +33,7 @@ def main():
                     pokedex.add(populate_pokemon)
                     # sort it as you add it 
                     pokedex.sort_list(data)
-                    # pokedex.get_statistics()
+                    pokedex.get_statistics()
             else:
                 print("Not valid command or pokemon not valid!!")
     

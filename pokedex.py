@@ -26,6 +26,13 @@ class Pokedex:
             )
         return pokemon_abilities
     
+    def get_statistics(self):
+        avg_height = []
+        for key in self.pokemon_sort:
+            for i in range(len(self.pokemon_sort[key]['characters'])):
+                avg_height.append(self.pokemon_sort[key]['characters'][i]['height'])
+        return avg_height
+    
     def existing_class_type(self, pokemon_data, class_types):
         # the class name exists so just need to append the data to that class name 
         # get it's abilities so can later append it 
@@ -47,6 +54,7 @@ class Pokedex:
 
     def new_class_type(self, pokemon_data, class_types):
         pokemon_abilities = self.get_ability(pokemon_data)
+        height = self.get_statistics()
         self.pokemon_sort.update(
         {
             class_types : 
@@ -66,7 +74,7 @@ class Pokedex:
                         }
                     ]
                     # 'statistics' : {
-                    #     "average height" : 0,
+                    #     "average height" : height,
                     #     "average weight" : 0,
                     #     "average health" : 0,
                     #     "average attack" : 0,
@@ -76,12 +84,6 @@ class Pokedex:
                 }
     
         })
-    
-    # def get_statistics(self):
-    #     for i in range(len(self.pokemon_sort['electric']['characters'])):
-    #         self.avg_height_electric.append(self.pokemon_sort[]['characters'][i]['height'])
-        
-    #     print(self.avg_height)
 
     def sort_list(self, pokemon_data):
 
